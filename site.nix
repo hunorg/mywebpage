@@ -82,15 +82,15 @@ let
       text-underline-offset: 0.2em;
       text-decoration-thickness: 1px;
     }
-    @media (hover: hover) {
-      a:hover { color: #000000; background: #ffffff; }
-    }
     ul { list-style: none; margin: 0; padding: 0; }
     li { margin: 0 0 0.6rem; }
     code {
       font-family: inherit;
       font-size: 0.95em;
-      color: #ffffff;
+      color: inherit;
+    }
+    @media (hover: hover) {
+      a:hover { color: #000000; background: #ffffff; }
     }
     .project-title { font-weight: 700; }
     .project-note { font-style: italic; color: #ffffff; }
