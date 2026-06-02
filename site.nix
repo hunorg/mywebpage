@@ -13,7 +13,6 @@ let
     h2
     section
     figure
-    figcaption
     pre
     code
     span
@@ -27,9 +26,9 @@ let
 
   about = "I am a software developer with a focus on functional programming, particularly in Elm, Haskell, and Nix/NixOS.";
 
-  cow =
-    pkgs.runCommand "cow.txt" { nativeBuildInputs = [ pkgs.cowsay ]; }
-      ''cowsay -W 40 ${lib.escapeShellArg about} > $out'';
+  cow = pkgs.runCommand "cow.txt" {
+    nativeBuildInputs = [ pkgs.cowsay ];
+  } "cowsay -W 40 ${lib.escapeShellArg about} > $out";
 
   css = ''
     *, *::before, *::after { box-sizing: border-box; }
@@ -115,13 +114,6 @@ let
       color: #d7fbe8;
       text-shadow: 0 0 1rem rgba(104, 224, 155, 0.16);
     }
-    .cow figcaption {
-      margin-top: 0.75rem;
-      font-size: 0.78rem;
-      color: #6f8b7d;
-      font-style: italic;
-      letter-spacing: 0.04em;
-    }
     address { font-style: normal; }
     footer {
       margin-top: clamp(2.5rem, 6vw, 4rem);
@@ -151,23 +143,18 @@ let
 
       (figure { class = "cow"; } [
         (pre (lib.readFile cow))
-        (figcaption "cowsay")
       ])
 
       (section [
         (h2 "Projects")
         (ul [
           (li [
-            (a { href = "https://pointy.cloud/"; } (
-              span { class = "project-title"; } "Pointy Notebook"
-            ))
+            (a { href = "https://pointy.cloud/"; } (span { class = "project-title"; } "Pointy Notebook"))
             (span { class = "project-note"; } " — collaborator since the start.")
             " Keeps research computation tidy: reusable analyses as project pages with forms, live runs, browsable outputs, and commit-pinned share links."
           ])
           (li [
-            (a { href = "https://terminal-top.eket.org/"; } (
-              span { class = "project-title"; } "terminal-top"
-            ))
+            (a { href = "https://terminal-top.eket.org/"; } (span { class = "project-title"; } "terminal-top"))
             " — A Nix-driven terminal dashboard for live, structured data. Define a source URL and a panel layout in a "
             (code ".nix")
             " file and it renders in the terminal — no app, no account, no cloud."
