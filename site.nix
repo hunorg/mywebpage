@@ -25,9 +25,11 @@ let
 
   about = "I am a software developer with a focus on functional programming, particularly in Elm, Haskell, and Nix/NixOS.";
 
-  cow = lib.readFile (pkgs.runCommand "cow.txt" {
-    nativeBuildInputs = [ pkgs.cowsay ];
-  } "cowsay -W 40 ${lib.escapeShellArg about} > $out");
+  cow = lib.readFile (
+    pkgs.runCommand "cow.txt" {
+      nativeBuildInputs = [ pkgs.cowsay ];
+    } "cowsay -W 40 ${lib.escapeShellArg about} > $out"
+  );
 
   css = ''
     *, *::before, *::after { box-sizing: border-box; }
@@ -92,68 +94,76 @@ let
     }
   '';
 
-  page = document (html { lang = "en"; } [
-    (head [
-      (meta { charset = "UTF-8"; })
-      (meta { name = "viewport"; content = "width=device-width, initial-scale=1"; })
-      (meta { name = "description"; content = about; })
-      (title "Hunor Geréd")
-      (style (raw css))
-    ])
-    (body [
-      (h1 "Hunor Geréd")
+  page = document (
+    html { lang = "en"; } [
+      (head [
+        (meta { charset = "UTF-8"; })
+        (meta {
+          name = "viewport";
+          content = "width=device-width, initial-scale=1";
+        })
+        (meta {
+          name = "description";
+          content = about;
+        })
+        (title "Hunor Geréd")
+        (style (raw css))
+      ])
+      (body [
+        (h1 "Hunor Geréd")
 
-      (figure { class = "cow"; } (pre cow))
+        (figure { class = "cow"; } (pre cow))
 
-      (section [
-        (h2 "Projects")
-        (ul [
-          (li [
-            (a { href = "https://pointy.cloud/"; } (span { class = "project-title"; } "Pointy Notebook"))
-            (span { class = "project-note"; } " — collaborator since the start.")
-            " Keeps research computation tidy: reusable analyses as project pages with forms, live runs, browsable outputs, and commit-pinned share links."
-          ])
-          (li [
-            (a { href = "https://terminal-top.eket.org/"; } (span { class = "project-title"; } "terminal-top"))
-            " — A Nix-driven terminal dashboard for live, structured data. Define a source URL and a panel layout in a "
-            (code ".nix")
-            " file and it renders in the terminal — no app, no account, no cloud."
+        (section [
+          (h2 "Projects")
+          (ul [
+            (li [
+              (a { href = "https://pointy.cloud/"; } (span { class = "project-title"; } "Pointy Notebook"))
+              (span { class = "project-note"; } " — collaborator since the start.")
+              " Keeps research computation tidy: reusable analyses as project pages with forms, live runs, browsable outputs, and commit-pinned share links."
+            ])
+            (li [
+              (a { href = "https://terminal-top.eket.org/"; } (span { class = "project-title"; } "terminal-top"))
+              " — A Nix-driven terminal dashboard for live, structured data. Define a source URL and a panel layout in a "
+              (code ".nix")
+              " file and it renders in the terminal — no app, no account, no cloud."
+            ])
           ])
         ])
-      ])
 
-      (section [
-        (h2 "Links")
-        (ul [
-          (li (a { href = "https://www.linkedin.com/in/hunorgered/"; } "LinkedIn"))
-          (li (a { href = "https://github.com/hunorg"; } "GitHub"))
-          (li (a { href = "https://gitlab.com/hunorg"; } "GitLab"))
+        (section [
+          (h2 "Links")
+          (ul [
+            (li (a { href = "https://www.linkedin.com/in/hunorgered/"; } "LinkedIn"))
+            (li (a { href = "https://github.com/hunorg"; } "GitHub"))
+            (li (a { href = "https://gitlab.com/hunorg"; } "GitLab"))
+          ])
+        ])
+
+        (section [
+          (h2 "Contact")
+          (address (ul [
+            (li [
+              "Matrix — "
+              (a { href = "https://matrix.to/#/@hunig:matrix.org"; } (code "@hunig:matrix.org"))
+            ])
+            (li [
+              "Email — "
+              (a { href = "mailto:hunorgered@gmail.com"; } "hunorgered@gmail.com")
+            ])
+          ]))
+        ])
+
+        (footer [
+          "Built with "
+          (a { href = "https://htnl.molybdenum.software/"; } "htnl")
+          ", a Nix library for making websites. "
+          (a { href = "https://github.com/hunorg/mysite"; } "Source")
+          "."
         ])
       ])
-
-      (section [
-        (h2 "Contact")
-        (address (ul [
-          (li [
-            "Matrix — "
-            (a { href = "https://matrix.to/#/@hunig:matrix.org"; } (code "@hunig:matrix.org"))
-          ])
-          (li [
-            "Email — "
-            (a { href = "mailto:hunorgered@gmail.com"; } "hunorgered@gmail.com")
-          ])
-        ]))
-      ])
-
-      (footer [
-        "Built with "
-        (a { href = "https://htnl.molybdenum.software/"; } "htnl")
-        ", a Nix library for making websites. "
-        (a { href = "https://github.com/hunorg/mysite"; } "Source")
-        "."
-      ])
-    ])
-  ]);
+    ]
+  );
 in
 bundle {
   name = "hunor-site";

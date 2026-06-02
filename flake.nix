@@ -13,7 +13,12 @@
   };
 
   outputs =
-    { nixpkgs, htnl, flake-utils, ... }:
+    {
+      nixpkgs,
+      htnl,
+      flake-utils,
+      ...
+    }:
     flake-utils.lib.eachDefaultSystem (
       system:
       let
