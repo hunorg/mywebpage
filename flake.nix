@@ -9,41 +9,46 @@
       url = "github:molybdenumsoftware/htnl";
       flake = false;
     };
-    flake-utils.url = "github:numtide/flake-utils";
   };
 
   outputs =
+    { nixpkgs, htnl, ... }:
+    let
+      systems = [
+        "x86_64-linux"
+      ];
+
+      forAllSystems = nixpkgs.lib.genAttrs systems;
+
+      perSystem =
+        system:
+        let
+          pkgs = import nixpkgs {
+            inherit system;
+            overlays = [ (import "${htnl}/overlay.nix") ];
+          };
+          site = import ./site.nix { inherit pkgs; };
+          updateDocs = pkgs.writeShellApplication {
+            name = "update-docs";
+            runtimeInputs = [ pkgs.coreutils ];
+            text = ''
+              install -Dm644 ${site}/index.html docs/index.html                                                                                                                           
+            '';
+          };
+        in
+        {
+          packages = {
+            default = site;
+            inherit site;
+          };
+          apps.update-docs = {
+            type = "app";
+            program = "${updateDocs}/bin/update-docs";
+          };
+        };
+    in
     {
-      nixpkgs,
-      htnl,
-      flake-utils,
-      ...
-    }:
-    flake-utils.lib.eachDefaultSystem (
-      system:
-      let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [ (import "${htnl}/overlay.nix") ];
-        };
-        site = import ./site.nix { inherit pkgs; };
-        updateDocs = pkgs.writeShellApplication {
-          name = "update-docs";
-          runtimeInputs = [ pkgs.coreutils ];
-          text = ''
-            install -Dm644 ${site}/index.html docs/index.html
-          '';
-        };
-      in
-      {
-        packages = {
-          default = site;
-          inherit site;
-        };
-        apps.update-docs = {
-          type = "app";
-          program = "${updateDocs}/bin/update-docs";
-        };
-      }
-    );
+      packages = forAllSystems (system: (perSystem system).packages);
+      apps = forAllSystems (system: (perSystem system).apps);
+    };
 }
