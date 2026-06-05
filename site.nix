@@ -1,6 +1,10 @@
-{ pkgs }:
+{
+  lib,
+  htnl,
+  cowsay,
+  runCommand,
+}:
 let
-  inherit (pkgs) lib htnl;
   inherit (htnl) bundle document raw;
   inherit (htnl.polymorphic.partials)
     html
@@ -26,8 +30,8 @@ let
   about = "I am a software developer with a focus on functional programming, particularly in Elm, Haskell, and Nix/NixOS.";
 
   cow = lib.readFile (
-    pkgs.runCommand "cow.txt" {
-      nativeBuildInputs = [ pkgs.cowsay ];
+    runCommand "cow.txt" {
+      nativeBuildInputs = [ cowsay ];
     } "cowsay -W 40 ${lib.escapeShellArg about} > $out"
   );
 

@@ -27,7 +27,7 @@
             inherit system;
             overlays = [ (import "${htnl}/overlay.nix") ];
           };
-          site = import ./site.nix { inherit pkgs; };
+          site = pkgs.callPackage ./site.nix { };
           updateDocs = pkgs.writeShellApplication {
             name = "update-docs";
             runtimeInputs = [ pkgs.coreutils ];
